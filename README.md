@@ -1,0 +1,2 @@
+# Eva2_Cloud
+📄 Descripción Segunda Evaluación: Aplicación web dockerizada con PHP/Apache y MariaDB usando Docker Compose. Se corrigió error por falta de Dockerfile y se verificaron contenedores, imágenes y volúmenes antes de ejecutar correctamente la app en el puerto 8080
