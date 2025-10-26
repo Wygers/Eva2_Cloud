@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  nube-web:
+    build: ./app-php
+    container_name: nube-web
+    hostname: nube-web
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: nube-db
+      DB_PORT: 3306
+      DB_NAME: empresa
+      DB_USER: usuarioapp
+      DB_PASSWORD: contraapp
+      APP_REQUIRED_PORT: 8080
+    depends_on:
+      - nube-db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+    restart: unless-stopped
+    networks:
+      - nube-net
+
+  nube-db:
+    image: mariadb:11.1
+    container_name: nube-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MARIADB_DATABASE: empresa
+      MARIADB_USER: usuarioapp
+      MARIADB_PASSWORD: contraapp
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
+    restart: unless-stopped
+    networks:
+      - nube-net
+    expose:
+      - "3306"
+
+networks:
+  nube-net:
+    driver: bridge
+
+volumes:
+  db_data:
